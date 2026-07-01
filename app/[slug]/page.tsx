@@ -1,5 +1,4 @@
 import { getEmployee } from "@/lib/sheets";
-import { VCard, VCardVersion } from "vcard-creator";
 
 export default async function Page({ params }: any) {
   const person = await getEmployee(params.slug);
@@ -10,10 +9,11 @@ export default async function Page({ params }: any) {
         <div className="text-center">
           <img
             src="/logo-horizontal-.png"
-            className="h-20 mx-auto mb-6"
+            alt="goSTOPS"
+            className="h-24 mx-auto mb-6"
           />
 
-          <h1 className="text-3xl font-bold">
+          <h1 className="text-3xl font-bold text-gray-900">
             Employee Not Found
           </h1>
 
@@ -25,79 +25,69 @@ export default async function Page({ params }: any) {
     );
   }
 
-  const card = new VCard();
+  // Generate VCF without any external package
+  const vcf = `BEGIN:VCARD
+VERSION:3.0
+FN:${person.name}
+ORG:goSTOPS
+TITLE:${person.role}
+TEL;TYPE=CELL:${person.phone}
+EMAIL:${person.email}
+END:VCARD`;
 
-  card.version = VCardVersion.Four;
-
-  card.addName(person.name);
-
-  card.addCompany("goSTOPS");
-
-  card.addJobtitle(person.role);
-
-  card.addEmail(person.email);
-
-  card.addPhoneNumber(person.phone);
-
-  const encoded = encodeURIComponent(card.toString());
+  const encoded = encodeURIComponent(vcf);
 
   return (
-    <div className="min-h-screen bg-[#f5f5f5] flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[#f5f5f5] flex items-center justify-center px-4 py-10">
 
       <div
         className="
-        w-full
-        max-w-sm
-        rounded-[28px]
-        bg-white/95
-        backdrop-blur-md
-        shadow-xl
-        overflow-hidden
-        transition-all
-        duration-300
-        hover:-translate-y-1
-        hover:shadow-2xl
-      "
+          w-full
+          max-w-sm
+          bg-white
+          rounded-[28px]
+          shadow-[0_10px_35px_rgba(0,0,0,0.08)]
+          overflow-hidden
+          transition-all
+          duration-300
+          hover:-translate-y-1
+          hover:shadow-[0_18px_45px_rgba(0,0,0,0.12)]
+        "
       >
 
-        {/* Logo */}
+        {/* TOP LOGO */}
 
         <div className="flex justify-center pt-8">
 
           <img
             src="/logo-horizontal-.png"
             alt="goSTOPS"
-            className="
-            h-24
-            w-auto
-            object-contain
-            select-none
-          "
+            className="h-24 w-auto object-contain"
           />
 
         </div>
 
-        {/* Brand Strip */}
+        {/* BRAND STRIP */}
 
         <div className="mt-5 h-[4px] w-full bg-gradient-to-r from-[#FF3366] via-[#7C3AED] via-[#FFCC00] via-[#33CCCC] via-[#FF9800] to-[#005FC6]" />
 
-        {/* Name */}
+        {/* NAME */}
 
-        <div className="text-center px-6 pt-7 animate-[fadeIn_.4s_ease]">
+        <div className="text-center px-6 pt-6">
 
-          <h1 className="text-[28px] font-bold text-[#1d1d1d]">
+          <h1 className="text-[28px] font-bold text-gray-900">
 
             {person.name}
 
           </h1>
 
-          <p className="mt-1 text-[17px] text-gray-500">
+          <p className="mt-1 text-[18px] text-gray-500">
 
             {person.role}
 
           </p>
 
-          <p className="mt-1 text-sm text-gray-400">
+          <p className="mt-1 text-[14px] text-gray-400">
 
             {person.department}
 
@@ -115,24 +105,23 @@ export default async function Page({ params }: any) {
             href={`data:text/vcard;charset=utf-8,${encoded}`}
             download={`${person.name}.vcf`}
             className="
-            flex
-            justify-center
-            items-center
-            bg-[#FF3366]
-            hover:bg-[#e62c5d]
-            active:scale-95
-            transition-all
-            duration-200
-            rounded-xl
-            py-4
-            text-white
-            font-semibold
-            shadow-lg
-          "
+              flex
+              justify-center
+              items-center
+              rounded-xl
+              bg-[#FF3366]
+              py-4
+              text-white
+              font-semibold
+              shadow-md
+              transition
+              duration-200
+              hover:bg-[#E92D61]
+              hover:shadow-lg
+              active:scale-95
+            "
           >
-
             💾 Save Contact
-
           </a>
 
         </div>
@@ -143,14 +132,14 @@ export default async function Page({ params }: any) {
 
           <div
             className="
-            rounded-xl
-            bg-[#fafafa]
-            p-5
-            text-center
-            transition-all
-            duration-300
-            hover:shadow-md
-          "
+              rounded-xl
+              bg-[#FAFAFA]
+              p-5
+              text-center
+              transition
+              duration-300
+              hover:shadow-md
+            "
           >
 
             <p className="text-xs tracking-widest text-gray-400">
@@ -161,7 +150,7 @@ export default async function Page({ params }: any) {
 
             <a
               href={`tel:${person.phone}`}
-              className="block mt-2 text-lg font-semibold"
+              className="block mt-2 text-lg font-semibold text-gray-900"
             >
 
               {person.phone}
@@ -178,14 +167,14 @@ export default async function Page({ params }: any) {
 
           <div
             className="
-            rounded-xl
-            bg-[#fafafa]
-            p-5
-            text-center
-            transition-all
-            duration-300
-            hover:shadow-md
-          "
+              rounded-xl
+              bg-[#FAFAFA]
+              p-5
+              text-center
+              transition
+              duration-300
+              hover:shadow-md
+            "
           >
 
             <p className="text-xs tracking-widest text-gray-400">
@@ -196,7 +185,7 @@ export default async function Page({ params }: any) {
 
             <a
               href={`mailto:${person.email}`}
-              className="block mt-2 text-base font-semibold break-all"
+              className="block mt-2 text-[16px] font-semibold text-gray-900 break-all"
             >
 
               {person.email}
@@ -207,13 +196,14 @@ export default async function Page({ params }: any) {
 
         </div>
 
-        {/* Bottom Logo */}
+        {/* BOTTOM LOGO */}
 
         <div className="py-8 flex justify-center">
 
           <img
             src="/vertical-logo-.png"
-            className="h-20 object-contain"
+            alt="goSTOPS"
+            className="h-20 w-auto object-contain"
           />
 
         </div>
